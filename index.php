@@ -10,6 +10,9 @@ Buon pomeriggio :ascoli1898: -->
 <?php 
 require_once __DIR__ . "/product.php";
 require_once __DIR__ . "/cibopercani.php";
+require_once __DIR__ . "/giochipercani.php";
+require_once __DIR__ . "/utente.php";
+require_once __DIR__ . "/anonimo.php";
 
 // Array dove pusheremo cibo per cani
 $foodForDogs = [];
@@ -26,10 +29,37 @@ $foodForDogs[] = $naturalTrainer;
 
 // Marca 3 cibo cani
 $eukanuba = new foodDogs('Eukanuba', 5, 35);
-$eukanuba->description = 'Pesa più la busta che il cane';
+$eukanuba->description = 'Woof';
 $foodForDogs[] = $eukanuba;
 
 
+
+// Array dove pusheremo i giochi per cani
+$gameForDogs = [];
+
+// Marca 1 Giocho per cane
+$palla = new gamesForDogs('Palla super rotonda', 0.2, 3);
+$palla->description = "Palla così rotonda che il tuo cane la amerà";
+$gameForDogs[] = $palla;
+
+
+// Marca 2 Gioco per cane
+$osso = new gamesForDogs('Osso super resistente', 0.5, 5);
+$osso->description = "Non importa cosa sta facendo il tuo cane, lui smetterà ciò che sta facendo per mordere quest'osso";
+$gameForDogs[] = $osso;
+
+
+
+// Definiamo un utente che avrà il 20% di sconto e la lista  di oggetti da comprare
+$giancarlo_esposito = new Utente('Giancarlo Esposito', 'gian96@gmail.com');
+$giancarlo_esposito->aggiungiProdotto($osso);
+$giancarlo_esposito->aggiungiProdotto($eukanuba);
+
+$anonymous = new Anonimo();
+$anonymous->aggiungiProdotto($palla);
+$anonymous->aggiungiProdotto($naturalTrainer);
+
+var_dump($anonymous);
 
 ?>
 
@@ -42,16 +72,42 @@ $foodForDogs[] = $eukanuba;
     <title>php OOP 2</title>
 </head>
 <body>
-    <?php foreach ($foodForDogs as $DogsFood){ ?>
-<h1> 
-    
-    <?php echo $DogsFood->object; ?>
-    <?php echo $DogsFood->weight; ?> 
-    <?php echo $DogsFood->price; ?> 
-    <?php echo $DogsFood->description; ?>
 
-</h1>
+<!-- Sezione Cibo -->
 
+<h2>Sezione cibo per cani: </h2>
+<?php foreach ($foodForDogs as $DogsFood){ ?>
+    <div> Oggetto: <?php echo $DogsFood->object; ?></div>
+    <div> Peso: <?php echo $DogsFood->weight; ?> kg</div>
+    <div> Prezzo: <?php echo $DogsFood->price; ?>  euro</div>
+    <div> Descrizione: <?php echo $DogsFood->description; ?> </div>
 <?php } ?>
+
+<!-- Sezione Giochi -->
+
+<h2>Sezione giochi per cani: </h2>
+<?php foreach ($gameForDogs as $Dogsgame){ ?>
+    <div> Oggetto: <?php echo $Dogsgame->object; ?></div>
+    <div> Peso: <?php echo $Dogsgame->weight; ?> gr</div>
+    <div> Prezzo: <?php echo $Dogsgame->price; ?>  euro</div>
+    <div> Descrizione: <?php echo $Dogsgame->description; ?> </div>
+<?php } ?>
+
+<?php 
+
+    
+// var_dump($giancarlo_esposito);
+$giancarlo_esposito->saldo = 40;
+if($giancarlo_esposito->effettuaPagamento() === 'ok') {
+    echo 'Grazie Giancarlo per aver completato il tuo acquisto';
+} 
+
+
+$anonymous->saldo = 14;
+if($anonymous->effettuaPagamento() === 'ok') {
+    echo 'Grazie per aver completato il tuo acquisto';
+} 
+?>
+<div></div>
 </body>
 </html>
