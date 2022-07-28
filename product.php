@@ -4,8 +4,6 @@ Class product {
 
     public $object;
 
-    public $marca;
-
     public $weight;
 
     public $price;
@@ -23,9 +21,7 @@ Class product {
     }
 
 }
-// $test = new Product('oggetto', 'peso', 'prezzo');
 
-// var_dump($test);
 
 
 
