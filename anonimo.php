@@ -31,14 +31,15 @@ class Anonimo {
         return $sommaTotale;
     }
 
-    public function effettuaPagamento() {
+    public function effettuaPagamento($cartaPrepagata) {
         $totaleDaPagare = $this->calcolaPrezzoTotale();
 
-        if($this->saldo < $totaleDaPagare) {
-            die('Saldo non disponibile');
+        if($cartaPrepagata->saldo2 < $totaleDaPagare) {
+            throw new Exception("Utente: $this->nome: Saldo insufficiente sulla carta");
         } else {
             return 'ok';
         }
+    
     }
 }
 

@@ -1,11 +1,3 @@
-<!-- 
-Oggi pomeriggio provate ad immaginare quali sono le classi necessarie per creare uno shop online con le seguenti caratteristiche.
-L'e-commerce vende prodotti per gli animali.
-I prodotti saranno oltre al cibo, anche giochi, cucce, etc.
-L'utente potrà sia comprare i prodotti senza registrarsi, oppure iscriversi e ricevere il 20% di sconto su tutti i prodotti.
-BONUS:
-Il pagamento avviene con la carta prepagata che deve contenere un saldo sufficiente all'acquisto.
-Buon pomeriggio :ascoli1898: -->
 
 <?php 
 require_once __DIR__ . "/product.php";
@@ -13,6 +5,7 @@ require_once __DIR__ . "/cibopercani.php";
 require_once __DIR__ . "/giochipercani.php";
 require_once __DIR__ . "/utente.php";
 require_once __DIR__ . "/anonimo.php";
+require_once __DIR__ . '/CartaPrepagata.php';
 
 // Array dove pusheremo cibo per cani
 $foodForDogs = [];
@@ -55,11 +48,16 @@ $giancarlo_esposito = new Utente('Giancarlo Esposito', 'gian96@gmail.com');
 $giancarlo_esposito->aggiungiProdotto($osso);
 $giancarlo_esposito->aggiungiProdotto($eukanuba);
 
+
+$cartaPrepagata = new CartaPrepagata('Giancarlo Esposito', '6868 2828 1313 4242', '05/22', '468');
+$cartaPrepagata->saldo = 150; // Per Utente Giancarlo
+$cartaPrepagata->saldo2 = 5; // Per Utente Anonimo
+
 $anonymous = new Anonimo();
 $anonymous->aggiungiProdotto($palla);
 $anonymous->aggiungiProdotto($naturalTrainer);
 
-var_dump($anonymous);
+
 
 ?>
 
@@ -96,17 +94,35 @@ var_dump($anonymous);
 <?php 
 
     
-// var_dump($giancarlo_esposito);
-$giancarlo_esposito->saldo = 40;
-if($giancarlo_esposito->effettuaPagamento() === 'ok') {
-    echo 'Grazie Giancarlo per aver completato il tuo acquisto';
-} 
+
+try {
+    if($giancarlo_esposito->effettuaPagamento($cartaPrepagata) === 'ok') {
+        echo "<h2>Grazie per aver completato il tuo acquisto</h2>";
+    }
+} catch(Exception $e) {
+    // Salvare nel log l'errore (serve al programmatore per tenere
+    // traccia di ciò che succede nel sito)
+    error_log($e->getMessage());
+
+    // Stampare in pagina un messaggio per l'utente
+    echo 'L\'operazione non è andata a buon fine, controlla il saldo sulla tua carta e riprova';
+}
 
 
-$anonymous->saldo = 14;
-if($anonymous->effettuaPagamento() === 'ok') {
-    echo 'Grazie per aver completato il tuo acquisto';
-} 
+
+
+try {
+    if($anonymous->effettuaPagamento($cartaPrepagata) === 'ok') {
+        echo "<h2>Grazie per aver completato il tuo acquisto</h2>";
+    }
+} catch(Exception $e) {
+    // Salvare nel log l'errore (serve al programmatore per tenere
+    // traccia di ciò che succede nel sito)
+    error_log($e->getMessage());
+
+    // Stampare in pagina un messaggio per l'utente
+    echo ' <h2> L\'operazione non è andata a buon fine, controlla il saldo sulla tua carta e riprova </h2>';
+}
 ?>
 <div></div>
 </body>
